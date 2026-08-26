@@ -64,48 +64,39 @@ Constraints:
 class Solution {
 public:
     string shortestBeautifulSubstring(string s, int k) {
-        int one_cnt = 0;
+        string out;
+        string cur;
+        int cur_cnt = 0;
         for (int i = 0; i < s.size(); i++) {
-            if (s[i] == '1') {
-                one_cnt++;
-            }
-        }
-        if (one_cnt < k) {
-            return string();
-        }
-        int end_idx = s.size() - 1;
-        while (s[end_idx] != '1') {
-            end_idx--;
-        }
-        int start_idx = 0;
-        for (int i = 0; i < s.size(); i++) {
-            if (s[i] == '1') {
-                if (one_cnt == k) {
-                    start_idx = i;
-                    break;
+            if (cur_cnt == k) {
+                if (k == 1) {
+                    return cur;
                 }
-                one_cnt--;
+                bool found = false;
+                for (int j = 0; j < cur.size(); j++) {
+                    if (cur[j] == '1') {
+                        if (found) {
+                            cur = cur.substr(j);
+                            cur_cnt--;
+                            break;
+                        } else {
+                            found = true;
+                        }
+                    }
+                }
             }
-        }
-        string out = s.substr(start_idx, end_idx - start_idx + 1);
-        while (start_idx >= 0) {
-            start_idx--;
-            if (start_idx < 0) {
-                break;
-            }
-            if (s[start_idx] != '1') {
+            if (cur_cnt == 0 && s[i] == '0') {
                 continue;
             }
-            end_idx--;
-            while (s[end_idx] != '1') {
-                end_idx--;
+            cur += s[i];
+            if (s[i] == '1') {
+                cur_cnt += 1;
             }
-            string beauti_str = s.substr(start_idx, end_idx - start_idx + 1);
-            if (beauti_str.size() < out.size()) {
-                out = s.substr(start_idx, end_idx - start_idx + 1);
-            } else if (beauti_str.size() == out.size()) {
-                if (beauti_str < out) {
-                    out = beauti_str;
+            if (cur_cnt == k) {
+                if (out.size() == 0 || cur.size() < out.size()) {
+                    out = cur;
+                } else if (cur.size() == out.size() && cur < out) {
+                    out = cur;
                 }
             }
         }
