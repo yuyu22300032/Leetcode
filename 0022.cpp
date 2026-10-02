@@ -28,47 +28,43 @@ Constraints:
 */
 
 class Solution {
-    struct Forming {
+    struct GenerateState {
         int opened;
-        int open_left;
+        int paran;
         string str;
 
-        Forming(int n)
+        GenerateState(int n)
         : opened(0)
-        , open_left(n)
+        , paran(n)
         , str() { ; }
     };
 public:
     vector<string> generateParenthesis(int n) {
+        queue<GenerateState> generating;
+        GenerateState base(n);
+        generating.push(base);
         vector<string> out;
-        vector<Forming> generating;
-        Forming base(n);
-        generating.push_back(base);
-        int idx = 0;
-        while (idx < generating.size())
-        {
-            if (generating[idx].opened > 0)
-            {
-                Forming new_forming = generating[idx];
-                new_forming.opened -= 1;
-                new_forming.str.push_back(')');
-                generating.push_back(new_forming);
+        while (!generating.empty()) {
+            GenerateState cur = generating.front();
+            generating.pop();
+            if ((cur.opened == 0) && (cur.paran == 0)) {
+                out.push_back(cur.str);
+                continue;
             }
-            if (generating[idx].open_left > 0)
-            {
-                Forming new_forming = generating[idx];
-                new_forming.open_left -= 1;
-                new_forming.opened += 1;
-                new_forming.str.push_back('(');
-                generating.push_back(new_forming);
+            if (cur.opened > 0) {
+                GenerateState next = cur;
+                next.opened -= 1;
+                next.str += ')';
+                generating.push(next);
             }
-            if (generating[idx].opened == 0 && generating[idx].open_left == 0)
-            {
-                out.push_back(generating[idx].str);
+            if (cur.paran > 0) {
+                GenerateState next = cur;
+                next.paran -= 1;
+                next.opened += 1;
+                next.str += '(';
+                generating.push(next);
             }
-            idx++;
         }
         return out;
     }
 };
-
