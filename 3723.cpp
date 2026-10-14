@@ -67,3 +67,21 @@ Constraints:
 
 
 */
+
+class Solution {
+public:
+    string maxSumOfSquares(int num, int sum) {
+        string out;
+        int cur = sum;
+        for (int i = 0; i < num; i++) {
+            if (cur > 9) {
+                cur -= 9;
+                out += '9';
+            } else {
+                out += to_string(cur);
+                cur = 0;
+            }
+        }
+        return cur == 0 ? out : "";
+    }
+};
