@@ -69,57 +69,28 @@ Constraints:
 class Solution {
 public:
     int longestMonotonicSubarray(vector<int>& nums) {
-        int out = 1;
-        int sub_len = 1;
-        bool is_increase = false;
-        for (int i = 1; i < nums.size(); ++i)
-        {
-            if (nums[i - 1] == nums[i])
-            {
-                out = max(out, sub_len);
-                sub_len = 1;
-            }
-            else if (nums[i - 1] < nums[i])
-            {
-                if (sub_len == 1)
-                {
-                    is_increase = true;
-                    sub_len++;
-                    continue;
+        int out = 0;
+        int cur = 0;
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] > nums[i - 1]) {
+                if (cur >= 0) {
+                    cur++;
+                    out = max(out, cur);
+                } else {
+                    cur = 1;
                 }
-                if (is_increase)
-                {
-                    sub_len++;
+            } else if (nums[i] < nums[i - 1]) {
+                if (cur <= 0) {
+                    cur--;
+                    out = max(out, -cur);
+                } else {
+                    cur = -1;
                 }
-                else
-                {
-                    out = max(out, sub_len);
-                    sub_len = 2;
-                    is_increase = true;
-                }
-            }
-            else
-            {
-                if (sub_len == 1)
-                {
-                    is_increase = false;
-                    sub_len++;
-                    continue;
-                }
-                if (is_increase)
-                {
-                    out = max(out, sub_len);
-                    sub_len = 2;
-                    is_increase = false;
-                }
-                else
-                {
-                    sub_len++;
-                }
+            } else {
+                cur = 0;
             }
         }
-        out = max(out, sub_len);
-        return out;
+        return out + 1;
     }
 };
 
